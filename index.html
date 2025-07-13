@@ -8,15 +8,14 @@
       font-family: 'Montserrat', Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
-      padding: 0 30px;
+      background: linear-gradient(135deg, #87CEEB 0%, #e1f5fe 100%);
       color: #1565C0;
       position: relative;
       overflow-x: hidden;
-      background: linear-gradient(135deg, #87CEEB 0%, #e1f5fe 100%);
     }
-    #calculusBg {
+    #limitCanvas {
       position: fixed;
-      left: 0; top: 0;
+      top: 0; left: 0;
       width: 100vw;
       height: 100vh;
       z-index: 0;
@@ -25,11 +24,11 @@
     .content {
       position: relative;
       z-index: 2;
-      background: rgba(255,255,255,0.88);
-      border-radius: 12px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 14px;
       margin: 40px auto;
       max-width: 760px;
-      box-shadow: 0 6px 32px rgba(33,150,243,0.09);
+      box-shadow: 0 6px 32px rgba(33,150,243,0.13);
       padding: 40px;
     }
     h1 {
@@ -65,10 +64,9 @@
   </style>
 </head>
 <body>
-  <canvas id="calculusBg"></canvas>
+  <canvas id="limitCanvas"></canvas>
   <div class="content">
     <h1>🍦 Welcome to Limit Land! 🍦</h1>
-  </div>
     <h2>What Is a Limit?</h2>
     <div class="fun-box">
       <p>Imagine you are walking toward a wall, but you can never actually touch it. You take a big step, then a smaller step, then a tiny, tiny step. Each time, you get <b>closer and closer</b> to the wall, but you never quite get there.</p>
@@ -117,108 +115,115 @@
   </div>
   <script>
     function resizeCanvas() {
-      const canvas = document.getElementById('calculusBg');
+      const canvas = document.getElementById('limitCanvas');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    const canvas = document.getElementById('calculusBg');
+    const canvas = document.getElementById('limitCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Animated math symbols
-    const symbols = [
-      {text: '∫', x: 120, y: 100, size: 68, dx: 0.6, dy: 0.2, color: "#1976D2"},
-      {text: '∞', x: 400, y: 250, size: 56, dx: -0.5, dy: 0.4, color: "#00BFFF"},
-      {text: 'lim', x: 900, y: 160, size: 44, dx: 0.4, dy: -0.7, color: "#1E90FF"},
-      {text: 'd/dx', x: 700, y: 520, size: 41, dx: -0.6, dy: 0.3, color: "#1976D2"},
-      {text: 'sin(x)', x: 200, y: 600, size: 38, dx: 0.5, dy: -0.4, color: "#00BFFF"},
-      {text: '→', x: 600, y: 400, size: 42, dx: 0.3, dy: 0.5, color: "#1E90FF"},
-    ];
+    // Animation variables
+    const margin = 80;
+    const W = () => canvas.width;
+    const H = () => canvas.height;
+    const curveColor = "#1E90FF";
+    const movingDotColor = "#FFD600";
+    const limitDotColor = "#D72660";
+    const tangentColor = "#43A047";
 
-    // For tangent animation
-    let tangentPos = 0;
-    let tangentDir = 1;
+    let t = 0; // Animation parameter
 
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, W(), H());
 
       // Draw axes
       ctx.save();
-      ctx.globalAlpha = 0.13;
+      ctx.globalAlpha = 0.18;
       ctx.strokeStyle = "#1976D2";
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(60, canvas.height - 80);
-      ctx.lineTo(canvas.width - 60, canvas.height - 80);
-      ctx.moveTo(60, canvas.height - 80);
-      ctx.lineTo(60, 80);
+      ctx.moveTo(margin, H()-margin);
+      ctx.lineTo(W()-margin, H()-margin);
+      ctx.moveTo(margin, H()-margin);
+      ctx.lineTo(margin, margin);
       ctx.stroke();
       ctx.restore();
 
-      // Sine wave
+      // Draw curve: y = sin(x)
       ctx.save();
-      ctx.globalAlpha = 0.25;
-      ctx.strokeStyle = "#00BFFF";
-      ctx.lineWidth = 7;
+      ctx.globalAlpha = 0.35;
+      ctx.strokeStyle = curveColor;
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      for (let x = 60; x < canvas.width - 60; x += 2) {
-        let angle = (x - 60) / 180 * Math.PI + (Date.now()/800);
-        let y = canvas.height - 80 - Math.sin(angle) * 70;
-        if (x === 60) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+      let scaleX = (W() - margin*2)/5; // 0 to 5
+      let scaleY = 120;
+      for(let x=0; x<=5; x+=0.01) {
+        let px = margin + x*scaleX;
+        let py = H()-margin - Math.sin(x)*scaleY;
+        if(x === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
       }
       ctx.stroke();
       ctx.restore();
 
-      // Tangent line approaching sine curve
-      tangentPos += tangentDir * 2;
-      if (tangentPos > canvas.width - 260 || tangentPos < 60) tangentDir *= -1;
-      let tx = tangentPos;
-      let tangle = (tx - 60) / 180 * Math.PI + (Date.now()/800);
-      let ty = canvas.height - 80 - Math.sin(tangle) * 70;
+      // Animate moving dot approaching limit point at x = 2
+      let animX = margin + (2 + Math.exp(-t/2)) * scaleX; // approaches x=2
+      let animY = H()-margin - Math.sin(2 + Math.exp(-t/2))*scaleY;
 
-      // Draw tangent
+      // Limit point
+      let limitX = margin + 2*scaleX;
+      let limitY = H()-margin - Math.sin(2)*scaleY;
+
+      // Draw limit point
       ctx.save();
-      ctx.globalAlpha = 0.28;
-      ctx.strokeStyle = "#FFD600";
-      ctx.lineWidth = 4;
-      // Find tangent angle
-      let slope = Math.cos(tangle) * 70 / 180 * Math.PI;
-      let len = 120;
-      let dx = len * Math.cos(Math.atan(slope));
-      let dy = len * Math.sin(Math.atan(slope));
+      ctx.globalAlpha = 0.8;
       ctx.beginPath();
-      ctx.moveTo(tx - dx, ty - dy);
-      ctx.lineTo(tx + dx, ty + dy);
+      ctx.arc(limitX, limitY, 13, 0, 2*Math.PI);
+      ctx.fillStyle = limitDotColor;
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#fff";
       ctx.stroke();
       ctx.restore();
 
-      // Draw approaching point (limit)
+      // Draw moving dot
       ctx.save();
-      ctx.globalAlpha = 0.30;
+      ctx.globalAlpha = 0.95;
       ctx.beginPath();
-      ctx.arc(tx, ty, 16, 0, 2*Math.PI);
-      ctx.fillStyle = "#43A047";
+      ctx.arc(animX, animY, 10, 0, 2*Math.PI);
+      ctx.fillStyle = movingDotColor;
       ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
       ctx.restore();
 
-      // Animate math symbols
-      symbols.forEach(s => {
-        ctx.save();
-        ctx.globalAlpha = 0.19;
-        ctx.font = `bold ${s.size}px serif`;
-        ctx.fillStyle = s.color;
-        ctx.fillText(s.text, s.x, s.y);
-        s.x += s.dx;
-        s.y += s.dy;
-        // Bounce off edges
-        if (s.x < 0 || s.x > canvas.width - 60) s.dx *= -1;
-        if (s.y < 60 || s.y > canvas.height - 60) s.dy *= -1;
-        ctx.restore();
-      });
+      // Draw tangent at limit point
+      ctx.save();
+      ctx.globalAlpha = 0.6;
+      ctx.strokeStyle = tangentColor;
+      ctx.lineWidth = 4;
+      let slope = Math.cos(2); // derivative of sin(x) at x=2
+      let len = 80;
+      ctx.beginPath();
+      ctx.moveTo(limitX - len, limitY - slope*len);
+      ctx.lineTo(limitX + len, limitY + slope*len);
+      ctx.stroke();
+      ctx.restore();
 
+      // Draw label (optional)
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      ctx.font = "18px Montserrat";
+      ctx.fillStyle = limitDotColor;
+      ctx.fillText("Limit point", limitX+14, limitY-14);
+      ctx.restore();
+
+      // Animate parameter
+      t += 0.07;
       requestAnimationFrame(animate);
     }
     animate();
