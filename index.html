@@ -2,24 +2,48 @@
 <html>
 <head>
   <title>Basics of limits</title>
-  <!-- Google Fonts for Montserrat -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Montserrat', Arial, sans-serif;
-      background: #E3F2FD; /* Light blue */
-      color: #47126B; /* Deep purple for text */
-      padding: 30px;
+      margin: 0;
+      min-height: 100vh;
+      padding: 0 30px;
+      color: #1565C0;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #87CEEB 0%, #e1f5fe 100%);
+    }
+    #calculusBg {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.88);
+      border-radius: 12px;
+      margin: 40px auto;
+      max-width: 760px;
+      box-shadow: 0 6px 32px rgba(33,150,243,0.09);
+      padding: 40px;
     }
     h1 {
-      color: #D72660; /* Vivid pink */
+      color: #00BFFF;
+      font-size: 2.5em;
+      text-shadow: 0 2px 16px #e3f2fd;
     }
     h2 {
-      color: #D72660; /* Vivid pink */
+      color: #1E90FF;
+      margin-top: 2em;
     }
     .fun-box {
-      background: #FFD6E0; /* Light pink */
-      border: 2px dashed #FFB7CE; /* Pastel pink */
+      background: #B3E5FC;
+      border: 2px dashed #81D4FA;
       padding: 20px;
       margin: 20px 0;
       border-radius: 15px;
@@ -27,67 +51,177 @@
     .ice-cream {
       font-size: 50px;
     }
-    ul {
-      margin-left: 30px;
+    ul, ol {
+      background: #E1F5FE;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    ::selection {
+      background: #B3E5FC;
+    }
+    a {
+      color: #1E90FF;
     }
   </style>
 </head>
 <body>
-  <div class="fun-box">
-<h1>🍦 Welcome to Limit Land! 🍦</h1>
+  <canvas id="calculusBg"></canvas>
+  <div class="content">
+    <h1>🍦 Welcome to Limit Land! 🍦</h1>
   </div>
-  
-  <h2>What Is a Limit?</h2>
-  <div class="fun-box">
-    <p>Imagine you are walking toward a wall, but you can never actually touch it. You take a big step, then a smaller step, then a tiny, tiny step. Each time, you get <b>closer and closer</b> to the [...]
-    <p>A <b>limit</b> is just the special spot you get super close to, even if you never actually get there!</p>
-  </div>
-  
-  <h2>Let’s Try With Ice Cream!</h2>
-  <div class="fun-box">
-    <span class="ice-cream">🍦</span>
-    <p>Think about eating a big ice cream cone. Instead of big bites, you take <b>tiny licks</b>. Every lick gets you closer to the tip, but you never finish it completely. The <b>limit</b> is like th[...]
-  </div>
-  
-  <h2>Why Do We Use Limits?</h2>
-  <ul>
-    <li>To see what happens when we get really, really close to a number.</li>
-    <li>To help with things we can’t do in normal math, like dividing by zero.</li>
-    <li>To guess the “last number” in a pattern, even if we can’t say it out loud.</li>
-  </ul>
-  
-  <h2>Fun Example: The Magic Number</h2>
-  <div class="fun-box">
-    <p>Let’s say you want to know what happens to the number <b>sin(x)/x</b> as x gets closer and closer to zero.</p>
+    <h2>What Is a Limit?</h2>
+    <div class="fun-box">
+      <p>Imagine you are walking toward a wall, but you can never actually touch it. You take a big step, then a smaller step, then a tiny, tiny step. Each time, you get <b>closer and closer</b> to the wall, but you never quite get there.</p>
+      <p>A <b>limit</b> is just the special spot you get super close to, even if you never actually get there!</p>
+    </div>
+    <h2>Let’s Try With Ice Cream!</h2>
+    <div class="fun-box">
+      <span class="ice-cream">🍦</span>
+      <p>Think about eating a big ice cream cone. Instead of big bites, you take <b>tiny licks</b>. Every lick gets you closer to the tip, but you never finish it completely. The <b>limit</b> is like the tip you get close to but never quite reach.</p>
+    </div>
+    <h2>Why Do We Use Limits?</h2>
     <ul>
-      <li>Try x = 0.1: sin(0.1)/0.1 is close to 1.</li>
-      <li>Try x = 0.01: sin(0.01)/0.01 is even closer to 1.</li>
-      <li>Try x = 0.001: sin(0.001)/0.001 is super close to 1!</li>
+      <li>To see what happens when we get really, really close to a number.</li>
+      <li>To help with things we can’t do in normal math, like dividing by zero.</li>
+      <li>To guess the “last number” in a pattern, even if we can’t say it out loud.</li>
     </ul>
-    <p>Even though you can’t divide by zero, the <b>limit</b> is 1, because that’s the number you get super close to.</p>
+    <h2>Fun Example: The Magic Number</h2>
+    <div class="fun-box">
+      <p>Let’s say you want to know what happens to the number <b>sin(x)/x</b> as x gets closer and closer to zero.</p>
+      <ul>
+        <li>Try x = 0.1: sin(0.1)/0.1 is close to 1.</li>
+        <li>Try x = 0.01: sin(0.01)/0.01 is even closer to 1.</li>
+        <li>Try x = 0.001: sin(0.001)/0.001 is super close to 1!</li>
+      </ul>
+      <p>Even though you can’t divide by zero, the <b>limit</b> is 1, because that’s the number you get super close to.</p>
+    </div>
+    <h2>Limits in Real Life</h2>
+    <ul>
+      <li>Getting closer and closer to the tip of your ice cream cone</li>
+      <li>Walking toward a wall but never touching it</li>
+      <li>Spinning on a merry-go-round and getting closer to a special spot</li>
+      <li>Eating a cookie and getting closer to the smallest piece</li>
+    </ul>
+    <h2>Try It Yourself!</h2>
+    <ol>
+      <li>Pick a number you want to get close to (like 0).</li>
+      <li>Pick a math rule (like sin(x)/x).</li>
+      <li>Try numbers really, really close (like 0.1, 0.01, 0.001).</li>
+      <li>See what number you’re almost reaching!</li>
+    </ol>
+    <h2>Remember</h2>
+    <div class="fun-box">
+      <p>A <b>limit</b> is just the number you get closer and closer to, even if you never actually land on it. It helps us see where things are going, even if we never get there!</p>
+    </div>
+    <h2>🎉 Have fun exploring Limit Land! 🎉</h2>
   </div>
-  
-  <h2>Limits in Real Life</h2>
-  <ul>
-    <li>Getting closer and closer to the tip of your ice cream cone</li>
-    <li>Walking toward a wall but never touching it</li>
-    <li>Spinning on a merry-go-round and getting closer to a special spot</li>
-    <li>Eating a cookie and getting closer to the smallest piece</li>
-  </ul>
-  
-  <h2>Try It Yourself!</h2>
-  <ol>
-    <li>Pick a number you want to get close to (like 0).</li>
-    <li>Pick a math rule (like sin(x)/x).</li>
-    <li>Try numbers really, really close (like 0.1, 0.01, 0.001).</li>
-    <li>See what number you’re almost reaching!</li>
-  </ol>
-  
-  <h2>Remember</h2>
-  <div class="fun-box">
-    <p>A <b>limit</b> is just the number you get closer and closer to, even if you never actually land on it. It helps us see where things are going, even if we never get there!</p>
-  </div>
-  
-  <h2>🎉 Have fun exploring Limit Land! 🎉</h2>
+  <script>
+    function resizeCanvas() {
+      const canvas = document.getElementById('calculusBg');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const canvas = document.getElementById('calculusBg');
+    const ctx = canvas.getContext('2d');
+
+    // Animated math symbols
+    const symbols = [
+      {text: '∫', x: 120, y: 100, size: 68, dx: 0.6, dy: 0.2, color: "#1976D2"},
+      {text: '∞', x: 400, y: 250, size: 56, dx: -0.5, dy: 0.4, color: "#00BFFF"},
+      {text: 'lim', x: 900, y: 160, size: 44, dx: 0.4, dy: -0.7, color: "#1E90FF"},
+      {text: 'd/dx', x: 700, y: 520, size: 41, dx: -0.6, dy: 0.3, color: "#1976D2"},
+      {text: 'sin(x)', x: 200, y: 600, size: 38, dx: 0.5, dy: -0.4, color: "#00BFFF"},
+      {text: '→', x: 600, y: 400, size: 42, dx: 0.3, dy: 0.5, color: "#1E90FF"},
+    ];
+
+    // For tangent animation
+    let tangentPos = 0;
+    let tangentDir = 1;
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw axes
+      ctx.save();
+      ctx.globalAlpha = 0.13;
+      ctx.strokeStyle = "#1976D2";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(60, canvas.height - 80);
+      ctx.lineTo(canvas.width - 60, canvas.height - 80);
+      ctx.moveTo(60, canvas.height - 80);
+      ctx.lineTo(60, 80);
+      ctx.stroke();
+      ctx.restore();
+
+      // Sine wave
+      ctx.save();
+      ctx.globalAlpha = 0.25;
+      ctx.strokeStyle = "#00BFFF";
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      for (let x = 60; x < canvas.width - 60; x += 2) {
+        let angle = (x - 60) / 180 * Math.PI + (Date.now()/800);
+        let y = canvas.height - 80 - Math.sin(angle) * 70;
+        if (x === 60) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Tangent line approaching sine curve
+      tangentPos += tangentDir * 2;
+      if (tangentPos > canvas.width - 260 || tangentPos < 60) tangentDir *= -1;
+      let tx = tangentPos;
+      let tangle = (tx - 60) / 180 * Math.PI + (Date.now()/800);
+      let ty = canvas.height - 80 - Math.sin(tangle) * 70;
+
+      // Draw tangent
+      ctx.save();
+      ctx.globalAlpha = 0.28;
+      ctx.strokeStyle = "#FFD600";
+      ctx.lineWidth = 4;
+      // Find tangent angle
+      let slope = Math.cos(tangle) * 70 / 180 * Math.PI;
+      let len = 120;
+      let dx = len * Math.cos(Math.atan(slope));
+      let dy = len * Math.sin(Math.atan(slope));
+      ctx.beginPath();
+      ctx.moveTo(tx - dx, ty - dy);
+      ctx.lineTo(tx + dx, ty + dy);
+      ctx.stroke();
+      ctx.restore();
+
+      // Draw approaching point (limit)
+      ctx.save();
+      ctx.globalAlpha = 0.30;
+      ctx.beginPath();
+      ctx.arc(tx, ty, 16, 0, 2*Math.PI);
+      ctx.fillStyle = "#43A047";
+      ctx.fill();
+      ctx.restore();
+
+      // Animate math symbols
+      symbols.forEach(s => {
+        ctx.save();
+        ctx.globalAlpha = 0.19;
+        ctx.font = `bold ${s.size}px serif`;
+        ctx.fillStyle = s.color;
+        ctx.fillText(s.text, s.x, s.y);
+        s.x += s.dx;
+        s.y += s.dy;
+        // Bounce off edges
+        if (s.x < 0 || s.x > canvas.width - 60) s.dx *= -1;
+        if (s.y < 60 || s.y > canvas.height - 60) s.dy *= -1;
+        ctx.restore();
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
 </body>
 </html>
