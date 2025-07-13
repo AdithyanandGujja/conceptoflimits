@@ -14,7 +14,7 @@
     }
     .container {
       max-width: 900px;
-      margin: 50px auto;
+      margin: 50px auto 50px auto;
       padding: 0 20px;
       display: flex;
       flex-direction: column;
@@ -68,6 +68,23 @@
       background: #e1f5fe;
       border-radius: 10px;
       box-shadow: 0 2px 16px rgba(33,150,243,0.05);
+    }
+    .replay-btn {
+      margin: 16px auto 0 auto; 
+      display: block; 
+      padding: 10px 22px; 
+      background: #00BFFF; 
+      border: none; 
+      border-radius: 8px; 
+      color: white;
+      font-size: 1.16em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(30,144,255,0.07);
+      transition: background 0.15s;
+    }
+    .replay-btn:hover {
+      background: #1976D2;
     }
     @media (max-width: 700px) {
       .container { padding: 0 4px; }
@@ -129,6 +146,9 @@
     <section class="visual-section">
       <h2>Visual Example: Limit of <span style="color:#1E90FF">sin(x)/x</span> as x → 0</h2>
       <canvas id="limitGraph" width="800" height="300"></canvas>
+      <button id="replayBtn" class="replay-btn">
+        Replay Animation
+      </button>
       <div style="max-width:600px;margin:18px auto 0;color:#1976D2;font-size:1.13em;">
         <b>Graphical Representation:</b> The yellow dot moves closer and closer to the red point at x=0, tracing the function <b>f(x) = sin(x)/x</b>.<br>
         <span style="color:#D72660;font-weight:bold;">At x=0, the function is undefined, but the limit exists and equals 1!</span><br>
@@ -142,6 +162,9 @@
     // === Animated Graph: sin(x)/x limit as x→0 ===
     const canvas = document.getElementById('limitGraph');
     const ctx = canvas.getContext('2d');
+    let t = 0;
+    let animationId = null;
+
     function drawGraph(t) {
       ctx.clearRect(0,0,canvas.width,canvas.height);
       const w = canvas.width, h = canvas.height;
@@ -253,13 +276,15 @@
       ctx.stroke();
       ctx.restore();
 
-      // Draw label for moving point
-      ctx.save();
-      ctx.font = "bold 15px Montserrat";
-      ctx.fillStyle = "#FFD600";
-      ctx.globalAlpha = 0.94;
-      ctx.fillText("Getting close...", animX+12, animY-12);
-      ctx.restore();
+      // Only show yellow text if it's not overlapping with the red label
+      if (animX > limitX + 60) {
+        ctx.save();
+        ctx.font = "bold 15px Montserrat";
+        ctx.fillStyle = "#FFD600";
+        ctx.globalAlpha = 0.94;
+        ctx.fillText("Getting close...", animX+12, animY-12);
+        ctx.restore();
+      }
 
       // Draw x=0 label
       ctx.save();
@@ -270,12 +295,24 @@
       ctx.restore();
     }
 
-    let t = 0;
     function animate() {
       drawGraph(t);
       t += 1.2;
-      requestAnimationFrame(animate);
+      // Stop animation when close to limit, so "Replay" makes sense
+      if (t < 360) {
+        animationId = requestAnimationFrame(animate);
+      }
     }
+
+    function replayAnimation() {
+      t = 0;
+      if (animationId) cancelAnimationFrame(animationId);
+      animate();
+    }
+
+    document.getElementById('replayBtn').onclick = replayAnimation;
+
+    // Initial run
     animate();
   </script>
 </body>
